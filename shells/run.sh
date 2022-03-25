@@ -1,5 +1,5 @@
 #!/bin/bash
-to="gtimeout 300"
+to="timeout 300"
 
 for filename in tests/benchmark_explicit/*.txt; do
   newname=${filename//tests\/benchmark_explicit\/}

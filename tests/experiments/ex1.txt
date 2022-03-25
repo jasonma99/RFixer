@@ -1,5 +1,0 @@
-ab{3}a
-+++
-abba
----
-abbba

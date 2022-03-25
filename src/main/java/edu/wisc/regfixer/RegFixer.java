@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import edu.wisc.regfixer.automata.Automaton;
 import edu.wisc.regfixer.diagnostic.Diagnostic;
@@ -304,7 +307,7 @@ public class RegFixer {
     }
     
     RegexNode solutionNode;
-    
+    String solution_string;
 		/*try {
 			if (!Global.pairMode) {
 				solutionNode = edu.wisc.regfixer.parser.Main.parse(solution);
@@ -330,37 +333,47 @@ public class RegFixer {
     
 	    try {
 			if (!Global.pairMode) {
-				solutionNode = edu.wisc.regfixer.parser.Main.parse(solution);
+				solution_string = solution;
 			} else {
-				solutionNode = edu.wisc.regfixer.parser.Main.parse(Global.root.finalString());
+				solution_string = Global.root.finalString();
 			}
-			System.out.println("solution is #sol#" + solutionNode + "#sol#");
+			Pattern pattern = Pattern.compile(solution_string);
 
-			Automaton automaton = new Automaton(solutionNode);
+            solutionNode = edu.wisc.regfixer.parser.Main.parse(solution_string);
+			System.out.println("solution is #sol#" + solutionNode + "#sol#");
+            
+            Automaton automaton = new Automaton(solutionNode);
 			for (String positive : job.getCorpus().getPositiveExamples()) {
 				if (!automaton.accepts(positive)) {
 					System.out.println("positive is " + positive);
 					System.out.println("auto cfail positives!!!!!!!!!!!!!!!");
 				}
+                if (false == pattern.matcher(positive).matches()){
+					System.out.println("Java util matcher return false for positive example: " + positive);
+                }
 			}
 			for (String negative : job.getCorpus().getNegativeExamples()) {
 				if (automaton.accepts(negative)) {
 					System.out.println("negative is " + negative);
 					System.out.println("auto cfail negatives!!!!!!!!!!!!!!!");
 				}
+                if (true == pattern.matcher(negative).matches()){
+					System.out.println("Java util matcher return false for negative example: " + negative);
+                }
 			}
-			
-			Enumerant sol = new Enumerant(solutionNode, new HashSet<>(), 0, null);
+
+            Enumerant sol = new Enumerant(solutionNode, new HashSet<>(), 0, null);
 			if (!job.getCorpus().passesEmptySetTest(sol)) {
 				System.out.println("pattern cfail negatives!!!!!!!!!!!!!!!");
 			}
 			if (!job.getCorpus().passesDotTest(sol)) {
 				System.out.println("pattern cfail positives!!!!!!!!!!!!!!!");
 			}
-	    } catch (Exception ex) {
-			// FIXME
-			System.out.println("exception while checking");
-		}
+	    } catch (PatternSyntaxException pse) {
+			System.out.printf("Java Pattern compile error message: %s%n", pse.getMessage());
+		} catch (Exception ex){
+			System.out.printf("Exception while checking: %s%n", ex);
+        }
 		
 		System.out.println("before exit");
 		

@@ -4,6 +4,9 @@ import java.io.StringReader;
 
 import java_cup.runtime.Symbol;
 
+import edu.wisc.regfixer.parser.Yylex;
+import edu.wisc.regfixer.parser.parser;
+
 public class Main {
   public static RegexNode parse (String raw) throws Exception {
     StringReader reader = new StringReader(raw);

@@ -32,3 +32,9 @@ results/tutor2/*
 results/tutor2base/*
 
 nohup.out
+
+results/*
+tests/*
+!tests/allRebele
+tongyu/*
+.vscode/*
